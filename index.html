@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MXT Tracker</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080d0c;color:#f1f5f2;font-family:Tahoma,Arial,sans-serif}
+header{padding:25px 18px;background:#101916;border-bottom:1px solid #25342c}
+.logo{font-size:25px;font-weight:bold;color:#b9f27c}
+.sub{color:#84948a;font-size:12px;margin-top:8px}
+main{max-width:950px;margin:auto;padding:18px}
+h2{font-size:17px;margin:24px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:#111b17;border:1px solid #26382d;border-radius:15px;padding:17px}
+.card small{color:#9baa9f}
+.number{font-size:27px;font-weight:bold;margin:15px 0;color:#b9f27c}
+.muted{color:#91a095;font-size:12px}
+.total{background:linear-gradient(130deg,#17251b,#101916);border:1px solid #496b43}
+input,select,button{width:100%;padding:13px;margin-top:10px;border-radius:9px;border:1px solid #34463a;background:#0b120e;color:white;font-size:14px}
+button{background:#b9f27c;color:#10170d;font-weight:bold;border:0;cursor:pointer}
+button.secondary{background:#26372c;color:white}
+.history{margin-top:12px}
+.entry{padding:13px 0;border-bottom:1px solid #26342b;font-size:13px;display:flex;justify-content:space-between;gap:10px}
+.positive{color:#b9f27c}
+canvas{width:100%;height:220px;margin-top:15px}
+footer{text-align:center;padding:30px;color:#718077;font-size:11px}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.number{font-size:25px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">MXT TRACKER</div>
+ <div class="sub">SOCIAL MEDIA ANALYTICS · VERSION 1.0</div>
+</header>
+
+<main>
+ <section class="card total">
+  <small>مجموع دنبال‌کنندگان</small>
+  <div class="number" id="total">0</div>
+  <div class="muted">مجموع حساب‌های ثبت‌شده</div>
+ </section>
+
+ <h2>حساب‌های اجتماعی</h2>
+ <section class="grid">
+  <div class="card">
+   <small>▶ APARAT</small>
+   <div class="number" id="aparat">0</div>
+   <div class="muted">MXT.REZA</div>
+   <div class="muted" id="aparatGrowth">بدون اطلاعات قبلی</div>
+  </div>
+  <div class="card">
+   <small>◎ INSTAGRAM</small>
+   <div class="number" id="instagram">0</div>
+   <div class="muted">MXT_REZA</div>
+   <div class="muted" id="instagramGrowth">بدون اطلاعات قبلی</div>
+  </div>
+ </section>
+
+ <h2>ثبت آمار جدید</h2>
+ <section class="card">
+  <label>حساب موردنظر</label>
+  <select id="account">
+   <option value="aparat">آپارات</option>
+   <option value="instagram">اینستاگرام</option>
+  </select>
+  <label>تعداد دنبال‌کنندگان فعلی</label>
+  <input id="count" type="number" min="0" placeholder="مثلاً 1250">
+  <button onclick="save()">ثبت آمار</button>
+  <p class="muted">اطلاعات واردشده در همین مرورگر ذخیره می‌شود.</p>
+ </section>
+
+ <h2>تحلیل رشد</h2>
+ <section class="grid">
+  <div class="card">
+   <small>رشد در ۲۴ ساعت</small>
+   <div class="number" id="daily">0</div>
+  </div>
+  <div class="card">
+   <small>رشد در ۷ روز</small>
+   <div class="number" id="weekly">0</div>
+  </div>
+  <div class="card">
+   <small>رشد در ۳۰ روز</small>
+   <div class="number" id="monthly">0</div>
+  </div>
+  <div class="card">
+   <small>درصد رشد ۳۰ روزه</small>
+   <div class="number" id="percent">0%</div>
+  </div>
+ </section>
+
+ <h2>تاریخچه ثبت آمار</h2>
+ <section class="card history" id="history">
+  هنوز آماری ثبت نشده است.
+ </section>
+ <button class="secondary" onclick="exportData()">دریافت فایل پشتیبان اطلاعات</button>
+
+</main>
+<footer>MXT TRACKER · BUILT FOR MXT.REZA</footer>
+
+<script>
+let data=JSON.parse(localStorage.getItem("mxt_data")||"[]");
+
+function save(){
+ const account=document.getElementById("account").value;
+ const count=Number(document.getElementById("count").value);
+ if(!Number.isSafeInteger(count)||count<0){
+  alert("تعداد معتبر وارد کن");
+  return;
+ }
+ data.push({account,count,time:Date.now()});
+ localStorage.setItem("mxt_data",JSON.stringify(data));
+ document.getElementById("count").value="";
+ render();
+}
+
+function latest(account){
+ return [...data].reverse().find(x=>x.account===account);
+}
+
+function growth(account){
+ const list=data.filter(x=>x.account===account).sort((a,b)=>a.time-b.time);
+ if(list.length<2)return null;
+ return list[list.length-1].count-list[list.length-2].count;
+}
+
+function totalAt(time){
+ const result={};
+ ["aparat","instagram"].forEach(a=>{
+  const found=data.filter(x=>x.account===a&&x.time<=time)
+                  .sort((x,y)=>y.time-x.time)[0];
+  result[a]=found?found.count:0;
+ });
+ return result.aparat+result.instagram;
+}
+
+function periodGrowth(hours){
+ const now=Date.now();
+ const current=totalAt(now);
+ const previous=totalAt(now-hours*3600000);
+ return current-previous;
+}
+
+function render(){
+ const a=latest("aparat");
+ const i=latest("instagram");
+ const av=a?a.count:0;
+ const iv=i?i.count:0;
+ document.getElementById("aparat").textContent=av.toLocaleString("en-US");
+ document.getElementById("instagram").textContent=iv.toLocaleString("en-US");
+ document.getElementById("total").textContent=(av+iv).toLocaleString("en-US");
+
+ ["aparat","instagram"].forEach(account=>{
+  const g=growth(account);
+  document.getElementById(account+"Growth").textContent=
+   g===null?"نیازمند ثبت دوم":(g>=0?"+":"")+g.toLocaleString("en-US")+" نسبت به ثبت قبلی";
+ });
+
+ document.getElementById("daily").textContent=periodGrowth(24).toLocaleString("en-US");
+ document.getElementById("weekly").textContent=periodGrowth(168).toLocaleString("en-US");
+ document.getElementById("monthly").textContent=periodGrowth(720).toLocaleString("en-US");
+
+ const old=totalAt(Date.now()-720*3600000);
+ const percent=old>0?(av+iv-old)/old*100:0;
+ document.getElementById("percent").textContent=percent.toFixed(2)+"%";
+
+ const history=document.getElementById("history");
+ const recent=[...data].reverse().slice(0,30);
+ history.innerHTML=recent.length?recent.map(x=>
+  `<div class="entry"><span>${x.account==="aparat"?"آپارات":"اینستاگرام"}</span><span>${x.count.toLocaleString("en-US")}</span><span>${new Date(x.time).toLocaleString("fa-IR")}</span></div>`
+ ).join(""):"هنوز آماری ثبت نشده است.";
+}
+
+function exportData(){
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="mxt-tracker-backup.json";a.click();
+ URL.revokeObjectURL(url);
+}
+render();
+</script>
+</body>
+</html>
