@@ -7,40 +7,45 @@
 <title>MXT Tracker</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080d0c;color:#f1f5f2;font-family:Tahoma,Arial,sans-serif}
-header{padding:25px 18px;background:#101916;border-bottom:1px solid #25342c}
+body{margin:0;background:#080d0b;color:#eef5ef;font-family:Tahoma,Arial,sans-serif}
+header{padding:24px 18px;background:#101a14;border-bottom:1px solid #26392c}
 .logo{font-size:25px;font-weight:bold;color:#b9f27c}
-.sub{color:#84948a;font-size:12px;margin-top:8px}
-main{max-width:950px;margin:auto;padding:18px}
-h2{font-size:17px;margin:24px 0 14px}
+.sub{font-size:11px;color:#8c9c90;margin-top:8px}
+main{max-width:900px;margin:auto;padding:17px}
+h2{font-size:16px;margin:25px 0 13px}
+.card{background:#111b15;border:1px solid #293c2d;border-radius:15px;padding:16px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card{background:#111b17;border:1px solid #26382d;border-radius:15px;padding:17px}
-.card small{color:#9baa9f}
-.number{font-size:27px;font-weight:bold;margin:15px 0;color:#b9f27c}
-.muted{color:#91a095;font-size:12px}
-.total{background:linear-gradient(130deg,#17251b,#101916);border:1px solid #496b43}
-input,select,button{width:100%;padding:13px;margin-top:10px;border-radius:9px;border:1px solid #34463a;background:#0b120e;color:white;font-size:14px}
-button{background:#b9f27c;color:#10170d;font-weight:bold;border:0;cursor:pointer}
-button.secondary{background:#26372c;color:white}
-.history{margin-top:12px}
-.entry{padding:13px 0;border-bottom:1px solid #26342b;font-size:13px;display:flex;justify-content:space-between;gap:10px}
-.positive{color:#b9f27c}
-canvas{width:100%;height:220px;margin-top:15px}
-footer{text-align:center;padding:30px;color:#718077;font-size:11px}
-@media(max-width:500px){.grid{grid-template-columns:1fr}.number{font-size:25px}}
+small,.muted{color:#96a69a;font-size:12px}
+.number{font-size:27px;color:#b9f27c;font-weight:bold;margin:13px 0}
+.total{background:linear-gradient(130deg,#1c3020,#101a14);padding:22px}
+input,select,button{width:100%;padding:13px;margin-top:9px;border-radius:9px;border:1px solid #344a38;background:#0a120d;color:white;font-size:14px}
+button{background:#b9f27c;color:#10180f;font-weight:bold;border:0;cursor:pointer}
+.secondary{background:#26372c;color:white}
+.danger{background:#492522;color:#fff}
+label{display:block;margin-top:13px;font-size:12px;color:#a8b7aa}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:#18251b;padding:13px;border-radius:10px}
+.stat b{display:block;color:#b9f27c;font-size:21px;margin-top:10px}
+.entry{padding:13px 0;border-bottom:1px solid #29382d;display:flex;justify-content:space-between;gap:8px;font-size:12px;align-items:center}
+.entry strong{color:#b9f27c}
+canvas{width:100%;height:240px;display:block;margin-top:14px}
+.chart-info{display:flex;justify-content:space-between;color:#91a194;font-size:11px;margin-top:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+footer{text-align:center;color:#718077;padding:30px;font-size:11px}
+@media(max-width:420px){.number{font-size:23px}.entry{flex-wrap:wrap}}
 </style>
 </head>
 <body>
 <header>
  <div class="logo">MXT TRACKER</div>
- <div class="sub">SOCIAL MEDIA ANALYTICS · VERSION 1.0</div>
+ <div class="sub">FOLLOWER ANALYTICS · PERSONAL EDITION</div>
 </header>
 
 <main>
  <section class="card total">
   <small>مجموع دنبال‌کنندگان</small>
   <div class="number" id="total">0</div>
-  <div class="muted">مجموع حساب‌های ثبت‌شده</div>
+  <div class="muted">APARAT + INSTAGRAM</div>
  </section>
 
  <h2>حساب‌های اجتماعی</h2>
@@ -49,99 +54,170 @@ footer{text-align:center;padding:30px;color:#718077;font-size:11px}
    <small>▶ APARAT</small>
    <div class="number" id="aparat">0</div>
    <div class="muted">MXT.REZA</div>
-   <div class="muted" id="aparatGrowth">بدون اطلاعات قبلی</div>
+   <div class="muted" id="ag">بدون ثبت قبلی</div>
   </div>
   <div class="card">
    <small>◎ INSTAGRAM</small>
    <div class="number" id="instagram">0</div>
    <div class="muted">MXT_REZA</div>
-   <div class="muted" id="instagramGrowth">بدون اطلاعات قبلی</div>
+   <div class="muted" id="ig">بدون ثبت قبلی</div>
   </div>
  </section>
 
- <h2>ثبت آمار جدید</h2>
+ <h2>ثبت اطلاعات جدید</h2>
  <section class="card">
-  <label>حساب موردنظر</label>
+  <label>انتخاب حساب</label>
   <select id="account">
    <option value="aparat">آپارات</option>
    <option value="instagram">اینستاگرام</option>
   </select>
-  <label>تعداد دنبال‌کنندگان فعلی</label>
-  <input id="count" type="number" min="0" placeholder="مثلاً 1250">
-  <button onclick="save()">ثبت آمار</button>
-  <p class="muted">اطلاعات واردشده در همین مرورگر ذخیره می‌شود.</p>
+
+  <label>تعداد دنبال‌کنندگان</label>
+  <input id="count" type="number" min="0" step="1" placeholder="مثلاً 1250">
+
+  <label>تاریخ و ساعت ثبت</label>
+  <input id="date" type="datetime-local">
+
+  <button onclick="save()">ثبت اطلاعات</button>
+  <p class="muted">هر بار که آمار جدیدی وارد می‌کنی، یک رکورد جدید ذخیره می‌شود.</p>
  </section>
 
  <h2>تحلیل رشد</h2>
- <section class="grid">
-  <div class="card">
-   <small>رشد در ۲۴ ساعت</small>
-   <div class="number" id="daily">0</div>
+ <section class="card">
+  <label>بازه زمانی تحلیل</label>
+  <select id="period" onchange="render()">
+   <option value="24">۲۴ ساعت گذشته</option>
+   <option value="168">۷ روز گذشته</option>
+   <option value="720">۳۰ روز گذشته</option>
+   <option value="8760">۳۶۵ روز گذشته</option>
+   <option value="all">تمام تاریخچه</option>
+  </select>
+
+  <div class="stats" style="margin-top:15px">
+   <div class="stat">تغییر تعداد<b id="change">—</b></div>
+   <div class="stat">درصد رشد<b id="percent">—</b></div>
+   <div class="stat">آمار قبلی<b id="old">—</b></div>
+   <div class="stat">آخرین آمار<b id="current">—</b></div>
   </div>
-  <div class="card">
-   <small>رشد در ۷ روز</small>
-   <div class="number" id="weekly">0</div>
-  </div>
-  <div class="card">
-   <small>رشد در ۳۰ روز</small>
-   <div class="number" id="monthly">0</div>
-  </div>
-  <div class="card">
-   <small>درصد رشد ۳۰ روزه</small>
-   <div class="number" id="percent">0%</div>
+  <p class="muted" id="analysisNote"></p>
+ </section>
+
+ <h2>نمودار رشد دنبال‌کنندگان</h2>
+ <section class="card">
+  <label>نمایش نمودار</label>
+  <select id="chartAccount" onchange="drawChart()">
+   <option value="total">مجموع دو حساب</option>
+   <option value="aparat">فقط آپارات</option>
+   <option value="instagram">فقط اینستاگرام</option>
+  </select>
+  <canvas id="chart"></canvas>
+  <div class="chart-info">
+   <span id="chartStart">ابتدای بازه</span>
+   <span id="chartEnd">آخرین ثبت</span>
   </div>
  </section>
 
- <h2>تاریخچه ثبت آمار</h2>
- <section class="card history" id="history">
-  هنوز آماری ثبت نشده است.
+ <h2>تاریخچه اطلاعات</h2>
+ <section class="card" id="history">
+  هنوز اطلاعاتی ثبت نشده است.
  </section>
- <button class="secondary" onclick="exportData()">دریافت فایل پشتیبان اطلاعات</button>
 
+ <h2>مدیریت اطلاعات</h2>
+ <section class="card">
+  <div class="actions">
+   <button onclick="exportData()">خروجی پشتیبان</button>
+   <button class="secondary" onclick="document.getElementById('importFile').click()">بازیابی پشتیبان</button>
+  </div>
+  <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importData(event)">
+  <button class="danger" onclick="clearData()">پاک کردن تمام اطلاعات</button>
+  <p class="muted">پیشنهاد: مرتباً از اطلاعاتت فایل پشتیبان بگیر.</p>
+ </section>
 </main>
-<footer>MXT TRACKER · BUILT FOR MXT.REZA</footer>
+
+<footer>MXT TRACKER · VERSION 2.0</footer>
 
 <script>
-let data=JSON.parse(localStorage.getItem("mxt_data")||"[]");
+const KEY="mxt_tracker_v2";
+let data=[];
+try{
+ data=JSON.parse(localStorage.getItem(KEY)||"[]");
+ if(!Array.isArray(data))data=[];
+}catch(e){data=[]}
+
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n).toLocaleString("en-US");
+const accounts=["aparat","instagram"];
+
+function persist(){
+ localStorage.setItem(KEY,JSON.stringify(data));
+}
+
+function latest(account,at=Infinity){
+ return data.filter(x=>x.account===account&&x.time<=at)
+ .sort((a,b)=>b.time-a.time)[0];
+}
+
+function totalAt(at){
+ return accounts.reduce((sum,a)=>{
+  const x=latest(a,at);
+  return sum+(x?x.count:0);
+ },0);
+}
+
+function getPeriod(){
+ const now=Date.now();
+ const p=$("period").value;
+ return p==="all"?null:now-Number(p)*3600000;
+}
+
+function compare(account,start,end){
+ const current=latest(account,end);
+ if(!current)return null;
+ let previous;
+ if(start===null){
+  const list=data.filter(x=>x.account===account&&x.time<current.time)
+   .sort((a,b)=>b.time-a.time);
+  previous=list[0];
+ }else{
+  previous=latest(account,start);
+ }
+ if(!previous)return null;
+ return {
+  old:previous.count,
+  current:current.count,
+  change:current.count-previous.count,
+  percent:previous.count===0?null:
+   (current.count-previous.count)/previous.count*100
+ };
+}
 
 function save(){
- const account=document.getElementById("account").value;
- const count=Number(document.getElementById("count").value);
+ const account=$("account").value;
+ const count=Number($("count").value);
+ const date=$("date").value;
  if(!Number.isSafeInteger(count)||count<0){
-  alert("تعداد معتبر وارد کن");
+  alert("تعداد دنبال‌کنندگان را درست وارد کن.");
   return;
  }
- data.push({account,count,time:Date.now()});
- localStorage.setItem("mxt_data",JSON.stringify(data));
- document.getElementById("count").value="";
- render();
-}
-
-function latest(account){
- return [...data].reverse().find(x=>x.account===account);
-}
-
-function growth(account){
- const list=data.filter(x=>x.account===account).sort((a,b)=>a.time-b.time);
- if(list.length<2)return null;
- return list[list.length-1].count-list[list.length-2].count;
-}
-
-function totalAt(time){
- const result={};
- ["aparat","instagram"].forEach(a=>{
-  const found=data.filter(x=>x.account===a&&x.time<=time)
-                  .sort((x,y)=>y.time-x.time)[0];
-  result[a]=found?found.count:0;
+ const time=date?new Date(date).getTime():Date.now();
+ if(!Number.isFinite(time)){
+  alert("تاریخ معتبر نیست.");
+  return;
+ }
+ if(time>Date.now()+60000){
+  alert("تاریخ ثبت نمی‌تواند در آینده باشد.");
+  return;
+ }
+ data.push({
+  id:Date.now()+"-"+Math.random().toString(36).slice(2),
+  account,count,time
  });
- return result.aparat+result.instagram;
-}
-
-function periodGrowth(hours){
- const now=Date.now();
- const current=totalAt(now);
- const previous=totalAt(now-hours*3600000);
- return current-previous;
+ data.sort((a,b)=>a.time-b.time);
+ persist();
+ $("count").value="";
+ $("date").value="";
+ render();
+ alert("اطلاعات با موفقیت ثبت شد.");
 }
 
 function render(){
@@ -149,38 +225,186 @@ function render(){
  const i=latest("instagram");
  const av=a?a.count:0;
  const iv=i?i.count:0;
- document.getElementById("aparat").textContent=av.toLocaleString("en-US");
- document.getElementById("instagram").textContent=iv.toLocaleString("en-US");
- document.getElementById("total").textContent=(av+iv).toLocaleString("en-US");
+ $("aparat").textContent=fmt(av);
+ $("instagram").textContent=fmt(iv);
+ $("total").textContent=fmt(av+iv);
 
- ["aparat","instagram"].forEach(account=>{
-  const g=growth(account);
-  document.getElementById(account+"Growth").textContent=
-   g===null?"نیازمند ثبت دوم":(g>=0?"+":"")+g.toLocaleString("en-US")+" نسبت به ثبت قبلی";
+ accounts.forEach((account)=>{
+  const records=data.filter(x=>x.account===account)
+   .sort((a,b)=>b.time-a.time);
+  const g=records.length>1?records[0].count-records[1].count:null;
+  const el=$(account==="aparat"?"ag":"ig");
+  el.textContent=g===null?"نیازمند ثبت دوم":
+   (g>=0?"+":"")+fmt(g)+" نسبت به ثبت قبلی";
  });
 
- document.getElementById("daily").textContent=periodGrowth(24).toLocaleString("en-US");
- document.getElementById("weekly").textContent=periodGrowth(168).toLocaleString("en-US");
- document.getElementById("monthly").textContent=periodGrowth(720).toLocaleString("en-US");
+ const start=getPeriod();
+ const now=Date.now();
+ const aResult=compare("aparat",start,now);
+ const iResult=compare("instagram",start,now);
+ const result=compareTotal(start,now);
 
- const old=totalAt(Date.now()-720*3600000);
- const percent=old>0?(av+iv-old)/old*100:0;
- document.getElementById("percent").textContent=percent.toFixed(2)+"%";
+ $("change").textContent=result?((result.change>=0?"+":"")+fmt(result.change)):"—";
+ $("percent").textContent=result&&result.percent!==null?
+  result.percent.toFixed(2)+"%":"—";
+ $("old").textContent=result?fmt(result.old):"—";
+ $("current").textContent=result?fmt(result.current):"—";
 
- const history=document.getElementById("history");
- const recent=[...data].reverse().slice(0,30);
- history.innerHTML=recent.length?recent.map(x=>
-  `<div class="entry"><span>${x.account==="aparat"?"آپارات":"اینستاگرام"}</span><span>${x.count.toLocaleString("en-US")}</span><span>${new Date(x.time).toLocaleString("fa-IR")}</span></div>`
- ).join(""):"هنوز آماری ثبت نشده است.";
+ $("analysisNote").textContent=result?
+  "مقایسه بر اساس آخرین ثبت قبل از شروع بازه و آخرین ثبت تا پایان بازه است.":
+  "برای این بازه هنوز اطلاعات کافی ثبت نشده است.";
+
+ const history=[...data].sort((a,b)=>b.time-a.time);
+ $("history").innerHTML=history.length?history.map(x=>
+  `<div class="entry">
+   <span>${x.account==="aparat"?"آپارات":"اینستاگرام"}</span>
+   <strong>${fmt(x.count)}</strong>
+   <span>${new Date(x.time).toLocaleString("fa-IR")}</span>
+   <button class="secondary" style="width:auto;margin:0;padding:7px 10px" onclick="removeEntry('${x.id}')">حذف</button>
+  </div>`
+ ).join(""):"هنوز اطلاعاتی ثبت نشده است.";
+
+ drawChart();
+}
+
+function compareTotal(start,end){
+ const current=totalAt(end);
+ let old;
+ if(start===null){
+  const times=[...new Set(data.map(x=>x.time))].sort((a,b)=>b-a);
+  if(times.length<2)return null;
+  old=totalAt(times[1]);
+ }else{
+  old=totalAt(start);
+  const hasBaseline=accounts.some(a=>latest(a,start));
+  if(!hasBaseline)return null;
+ }
+ return {
+  old,current,change:current-old,
+  percent:old===0?null:(current-old)/old*100
+ };
+}
+
+function removeEntry(id){
+ if(!confirm("این رکورد حذف شود؟"))return;
+ data=data.filter(x=>x.id!==id);
+ persist();render();
+}
+
+function drawChart(){
+ const canvas=$("chart");
+ const rect=canvas.getBoundingClientRect();
+ const ratio=window.devicePixelRatio||1;
+ canvas.width=rect.width*ratio;
+ canvas.height=240*ratio;
+ const ctx=canvas.getContext("2d");
+ ctx.scale(ratio,ratio);
+ const w=rect.width,h=240;
+ ctx.clearRect(0,0,w,h);
+
+ const start=getPeriod();
+ const account=$("chartAccount").value;
+ const selected=data.filter(x=>(start===null||x.time>=start))
+  .sort((a,b)=>a.time-b.time);
+ if(!selected.length){
+  ctx.fillStyle="#91a194";
+  ctx.textAlign="center";
+  ctx.font="13px Tahoma";
+  ctx.fillText("پس از ثبت آمار، نمودار نمایش داده می‌شود",w/2,120);
+  return;
+ }
+
+ const times=[...new Set(selected.map(x=>x.time))];
+ let points=times.map(t=>{
+  let value;
+  if(account==="total")value=totalAt(t);
+  else{
+   const x=latest(account,t);
+   value=x?x.count:null;
+  }
+  return {time:t,value};
+ }).filter(x=>x.value!==null);
+
+ if(points.length===0)return;
+ if(points.length===1){
+  points.unshift({...points[0],time:points[0].time-1});
+ }
+
+ const values=points.map(x=>x.value);
+ let min=Math.min(...values),max=Math.max(...values);
+ if(min===max){min=Math.max(0,min-1);max=max+1}
+ const pad=35,top=18,bottom=35;
+ const x=t=>pad+(t/(points.length-1))*(w-pad*2);
+ const y=v=>top+(max-v)/(max-min)*(h-top-bottom);
+
+ ctx.strokeStyle="#26382c";
+ ctx.lineWidth=1;
+ for(let n=0;n<5;n++){
+  let yy=top+n*(h-top-bottom)/4;
+  ctx.beginPath();ctx.moveTo(pad,yy);ctx.lineTo(w-pad,yy);ctx.stroke();
+ }
+ ctx.beginPath();
+ points.forEach((p,j)=>{
+  if(j===0)ctx.moveTo(x(j),y(p.value));
+  else ctx.lineTo(x(j),y(p.value));
+ });
+ ctx.strokeStyle="#b9f27c";
+ ctx.lineWidth=3;
+ ctx.lineJoin="round";
+ ctx.stroke();
+
+ points.forEach((p,j)=>{
+  ctx.beginPath();
+  ctx.arc(x(j),y(p.value),3.5,0,Math.PI*2);
+  ctx.fillStyle="#b9f27c";
+  ctx.fill();
+ });
+ ctx.fillStyle="#a1b0a3";
+ ctx.font="10px Tahoma";
+ ctx.textAlign="right";
+ ctx.fillText(fmt(max),w-pad,top-5);
+ ctx.fillText(fmt(min),w-pad,h-8);
+
+ $("chartStart").textContent=new Date(points[0].time).toLocaleDateString("fa-IR");
+ $("chartEnd").textContent=new Date(points[points.length-1].time).toLocaleDateString("fa-IR");
 }
 
 function exportData(){
  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob);
  const a=document.createElement("a");
- a.href=url;a.download="mxt-tracker-backup.json";a.click();
+ a.href=url;a.download="MXT-Tracker-Backup.json";a.click();
  URL.revokeObjectURL(url);
 }
+
+function importData(event){
+ const file=event.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const imported=JSON.parse(reader.result);
+   if(!Array.isArray(imported)||!imported.every(x=>
+    accounts.includes(x.account)&&Number.isSafeInteger(x.count)&&
+    x.count>=0&&Number.isFinite(x.time))){
+    throw new Error("invalid");
+   }
+   if(!confirm("اطلاعات فعلی با فایل پشتیبان جایگزین شود؟"))return;
+   data=imported;
+   persist();render();
+   alert("اطلاعات بازیابی شد.");
+  }catch(e){alert("فایل پشتیبان معتبر نیست.");}
+ };
+ reader.readAsText(file);
+ event.target.value="";
+}
+
+function clearData(){
+ if(!confirm("تمام تاریخچه برای همیشه از این مرورگر پاک شود؟"))return;
+ data=[];persist();render();
+}
+
+window.addEventListener("resize",drawChart);
 render();
 </script>
 </body>
